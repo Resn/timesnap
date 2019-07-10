@@ -30,7 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const puppeteer = require('puppeteer');
 const path = require('path');
 const defaultDuration = 5;
 const defaultFPS = 60;
@@ -47,6 +46,7 @@ module.exports = function (config) {
   var fps = config.fps, frameDuration;
   var framesToCapture;
   var outputPath = path.resolve(process.cwd(), (config.outputDirectory || './'));
+  var browser = config.browser;
 
   if (url.indexOf('://') === -1) {
     // assume it is a file path
@@ -101,7 +101,6 @@ module.exports = function (config) {
     args: config.launchArguments || []
   };
 
-  return puppeteer.launch(launchOptions).then(function (browser) {
     return browser.newPage().then(function (page) {
       config = Object.assign({
         log,
@@ -249,10 +248,8 @@ module.exports = function (config) {
           }
         });
       });
-    }).then(function () {
-      return browser.close();
     }).catch(function (err) {
       log(err);
     });
-  });
+
 };
